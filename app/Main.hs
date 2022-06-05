@@ -39,14 +39,13 @@ instance DPArray Bool where
 -- 入力 =====================================================================================================================================================
 class (Read a) => Input a where
   read' :: BS.ByteString -> a
-  reads' :: BS.ByteString -> a
   readArray2D :: Height -> Width -> BS.ByteString -> a
 
 input :: Input a => IO a
 input = read' <$> BS.getLine
 
 inputs :: Input a => IO a
-inputs = reads' <$> BS.getContents
+inputs = read' <$> BS.getContents
 
 inputArray :: Input a => Int -> Int -> IO a
 inputArray = flip flip BS.getContents . ((<$>) .) . readArray2D
@@ -70,19 +69,19 @@ instance Input [Double] where
   read' = map ((read @Double) . BS.unpack) . BS.words
 
 instance Input [(Int, Bs)] where
-  reads' = map ((\[a, b] -> (fst (fromJust (BS.readInt a)), b)) . BS.words) . BS.lines
+  read' = map ((\[a, b] -> (fst (fromJust (BS.readInt a)), b)) . BS.words) . BS.lines
 
 instance Input [(Bs, Int)] where
-  reads' = map ((\[a, b] -> (a, fst (fromJust (BS.readInt b)))) . BS.words) . BS.lines
+  read' = map ((\[a, b] -> (a, fst (fromJust (BS.readInt b)))) . BS.words) . BS.lines
 
 instance Input [[Bs]] where
-  reads' = map BS.words . BS.lines
+  read' = map BS.words . BS.lines
 
 instance Input [[Int]] where
-  reads' = map (map (fst . fromJust . BS.readInt) . BS.words) . BS.lines
+  read' = map (map (fst . fromJust . BS.readInt) . BS.words) . BS.lines
 
 instance Input [[Double]] where
-  reads' = map (map ( (read @Double) . BS.unpack) . BS.words) . BS.lines
+  read' = map (map ( (read @Double) . BS.unpack) . BS.words) . BS.lines
 
 instance Input (Array2D Int) where
   readArray2D = flip flip ((map (fst . fromJust . BS.readInt) . BS.words) <=< BS.lines) . (((.) . A.listArray . ((0, 0) ,)) .) . (. subtract 1) . (,) . subtract 1
