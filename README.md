@@ -19,7 +19,7 @@ a <- inputs @[[Int]]
 -}  
 
 -- 複数行２列 (前と後ろが数値もしくは文字列)の時
-ab <- inputs @[(Int,Bs)]
+ab <- inputs @[(Bs,Int)]
 
 {-
                         [
